@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>حاسبة انقطاع المكافأة - جامعة الإمام محمد بن سعود الإسلامية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900&family=Noto+Sans+Devanagari:wght@400;500;700;900&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#0e8f8a;
+    --blue:#12406e;
+    --blue-dark:#0b2b4a;
+    --bg:#f4f8f9;
+    --card:#ffffff;
+    --ink:#173245;
+    --muted:#5c7180;
+    --line:#e1e9ec;
+    --good:#1d8a5a;
+    --warn:#b3541e;
+    --bad:#c0392b;
+    --radius:14px;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0e1a20; --card:#132229; --ink:#eaf2f4; --muted:#9db2bc; --line:#25353d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1a20; --card:#132229; --ink:#eaf2f4; --muted:#9db2bc; --line:#25353d;
+  }
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Tajawal','Noto Sans','Noto Sans Devanagari','Noto Nastaliq Urdu','Segoe UI', Tahoma, sans-serif;
+    line-height:1.7;
+  }
+  body[data-lang="ur"]{font-family:'Noto Nastaliq Urdu','Tajawal',sans-serif;}
+  body[data-lang="hi"]{font-family:'Noto Sans Devanagari','Noto Sans',sans-serif;}
+  body[data-lang="ru"],body[data-lang="en"],body[data-lang="fr"],body[data-lang="id"],body[data-lang="tl"],body[data-lang="ms"]{font-family:'Noto Sans','Segoe UI',sans-serif;}
+
+  .header{
+    background:linear-gradient(120deg, var(--teal), var(--blue) 65%, var(--blue-dark));
+    color:#fff;
+    padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 26px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .header::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,.10) 0, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255,255,255,.08) 0, transparent 45%);
+  }
+  .header-inner{position:relative; max-width:760px; margin:0 auto;}
+  .lang-bar{
+    display:flex; justify-content:center; margin-bottom:10px;
+  }
+  #langSelect{
+    background:rgba(255,255,255,.16);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:20px;
+    padding:6px 14px;
+    font-size:13px;
+    font-family:inherit;
+    font-weight:700;
+  }
+  #langSelect option{color:#173245;}
+  .brand{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    font-weight:700; letter-spacing:.5px; opacity:.95; font-size:14.5px;
+    flex-wrap:wrap;
+  }
+  .brand .dot{width:6px;height:6px;border-radius:50%;background:#fff;opacity:.7;}
+  h1{
+    margin:14px 0 6px;
+    font-size:25px;
+    font-weight:900;
+  }
+  .sub{
+    font-size:14.5px;
+    opacity:.92;
+    max-width:520px;
+    margin:0 auto;
+  }
+  .wrap{
+    max-width:760px;
+    margin:-16px auto 40px;
+    padding:0 16px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px 20px;
+    margin-bottom:16px;
+    box-shadow:0 6px 20px rgba(10,40,50,.06);
+  }
+  .card h2{
+    font-size:17px;
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .step-num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;height:24px;
+    border-radius:50%;
+    background:var(--teal);
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    flex:0 0 auto;
+  }
+  label{
+    display:block;
+    font-size:14px;
+    color:var(--muted);
+    margin:14px 0 6px;
+  }
+  label:first-of-type{margin-top:0;}
+  select, input[type=number]{
+    width:100%;
+    padding:11px 12px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--bg);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:15px;
+  }
+  .row2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .hint{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .result-card{
+    background:linear-gradient(135deg, var(--teal), var(--blue));
+    color:#fff;
+    border:none;
+  }
+  .result-card h2{color:#fff;}
+  .result-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:6px;
+  }
+  .result-box{
+    background:rgba(255,255,255,.12);
+    border-radius:10px;
+    padding:14px;
+    text-align:center;
+  }
+  .result-box .label{font-size:12.5px; opacity:.85; margin-bottom:6px;}
+  .result-box .value{font-size:18px; font-weight:900;}
+  .status-line{
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:700;
+    text-align:center;
+  }
+  .status-ok{background:rgba(255,255,255,.16);}
+  .status-bad{background:rgba(200,40,30,.35);}
+  .rules{
+    font-size:14px;
+  }
+  .rules ul{margin:8px 0 0; padding-inline-start:20px;}
+  .rules li{margin-bottom:6px;}
+  .note{
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:13.5px;
+    color:var(--muted);
+    margin-top:10px;
+  }
+  .note b{color:var(--ink);}
+  .disclaimer{
+    font-size:12px;
+    color:var(--muted);
+    text-align:center;
+    line-height:1.8;
+  }
+  .footer{
+    text-align:center;
+    padding:26px 16px 40px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .footer .uni{
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:4px;
+  }
+  .footer .dev{
+    margin-top:10px;
+    font-size:12.5px;
+  }
+  .footer .dev b{color:var(--teal);}
+
+  /* ---- system-change badge ---- */
+  .sys-note{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    background:linear-gradient(120deg, rgba(14,143,138,.10), rgba(18,64,110,.10));
+    border:1px solid rgba(14,143,138,.28);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:13px;
+    color:var(--ink);
+    margin-top:12px;
+  }
+  .sys-note .ic{
+    flex:0 0 auto;
+    font-size:17px;
+    line-height:1;
+  }
+  .admit-flag{
+    display:inline-block;
+    margin-top:8px;
+    font-size:12.5px;
+    font-weight:700;
+    padding:5px 10px;
+    border-radius:20px;
+    background:rgba(14,143,138,.14);
+    color:var(--teal);
+  }
+  :root[data-theme="dark"] .admit-flag{ background:rgba(14,143,138,.22); }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .admit-flag{ background:rgba(14,143,138,.22); }
+  }
+
+  /* ---- calculate button ---- */
+  .btn-calc{
+    width:100%;
+    border:none;
+    cursor:pointer;
+    padding:16px 18px;
+    border-radius:14px;
+    background:linear-gradient(120deg, var(--teal), var(--blue) 75%);
+    color:#fff;
+    font-family:inherit;
+    font-size:16.5px;
+    font-weight:900;
+    letter-spacing:.2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    box-shadow:0 10px 24px rgba(14,80,90,.28);
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    margin:4px 0 20px;
+  }
+  .btn-calc:hover{ filter:brightness(1.06); box-shadow:0 12px 28px rgba(14,80,90,.34); }
+  .btn-calc:active{ transform:translateY(1px) scale(.99); }
+  .btn-calc .ic{ font-size:19px; }
+
+  /* ---- result card reveal ---- */
+  .result-card{ display:none; }
+  .result-card.show{
+    display:block;
+    animation:cardIn .5s cubic-bezier(.2,.8,.25,1) both;
+  }
+  @keyframes cardIn{
+    0%{ opacity:0; transform:translateY(14px) scale(.98); }
+    100%{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .result-grid.three{
+    grid-template-columns:1fr 1fr 1fr;
+  }
+  @media (max-width:520px){
+    .result-grid.three{ grid-template-columns:1fr 1fr; }
+    .result-grid.three .result-box:last-child{ grid-column:1 / -1; }
+  }
+  .result-box{ animation:boxIn .5s ease both; }
+  .result-box:nth-child(1){ animation-delay:.05s; }
+  .result-box:nth-child(2){ animation-delay:.15s; }
+  .result-box:nth-child(3){ animation-delay:.25s; }
+  @keyframes boxIn{
+    0%{ opacity:0; transform:translateY(8px); }
+    100%{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---- excellence award note ---- */
+  .excellence-card{
+    background:linear-gradient(135deg, #fff7e6, #fff);
+    border:1px solid #f0d38a;
+    position:relative;
+    overflow:hidden;
+  }
+  :root[data-theme="dark"] .excellence-card{
+    background:linear-gradient(135deg, #2a230f, #17232a);
+    border:1px solid #6b5620;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .excellence-card{
+      background:linear-gradient(135deg, #2a230f, #17232a);
+      border:1px solid #6b5620;
+    }
+  }
+  .excellence-card::before{
+    content:"";
+    position:absolute; inset:0 auto 0 0;
+    width:6px;
+    background:linear-gradient(180deg, #c9992b, #e9c877);
+  }
+  .excellence-head{
+    display:flex; align-items:center; gap:10px;
+    font-weight:900; font-size:16px;
+    color:#8a6416;
+    margin-bottom:10px;
+  }
+  :root[data-theme="dark"] .excellence-head{ color:#e9c877; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .excellence-head{ color:#e9c877; }
+  }
+  .excellence-head .ic{ font-size:19px; }
+  .excellence-card p{ margin:0 0 10px; font-size:14px; }
+  .excellence-cond{
+    background:rgba(201,153,43,.12);
+    border:1px dashed rgba(201,153,43,.5);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:13.5px;
+  }
+  .excellence-cond b{ color:#8a6416; }
+  :root[data-theme="dark"] .excellence-cond b{ color:#e9c877; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .excellence-cond b{ color:#e9c877; }
+  }
+</style>
+</head>
+<body id="bodyRoot" data-lang="ar">
+
+<div class="header">
+  <div class="header-inner">
+    <div class="lang-bar">
+      <select id="langSelect"></select>
+    </div>
+    <div class="brand" id="brandText">جامعة الإمام محمد بن سعود الإسلامية <span class="dot"></span> IMAMU</div>
+    <h1 id="h1Text">حاسبة انقطاع المكافأة</h1>
+    <p class="sub" id="subText">اعرف متى تنقطع مكافأتك الطلابية وفق أنظمة الجامعة، قبل ما تتفاجأ</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2><span class="step-num">1</span> <span id="step1Title">معدلك التراكمي</span></h2>
+    <label id="gpaLabelText" for="gpa">المعدل التراكمي من 5</label>
+    <input type="number" id="gpa" min="0" max="5" step="0.01" value="4.00">
+    <p class="hint" id="gpaHintText">الحد الأدنى المطلوب لاستمرار صرف المكافأة هو 2 من 5. إذا قلّ معدلك عنه تنقطع المكافأة بصرف النظر عن الفصل.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="step-num">2</span> <span id="step2Title">المدة النظامية لتخصصك</span></h2>
+    <label id="durationLabelText" for="duration">عدد الفصول الدراسية في خطتك (بدون التأجيل أو الاعتذار)</label>
+    <select id="duration">
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10" selected>10</option>
+      <option value="11">11</option>
+      <option value="12">12</option>
+    </select>
+    <p class="hint" id="durationHintText">راجع الخطة الدراسية لتخصصك في عمادة القبول والتسجيل لمعرفة عدد الفصول الدقيق إن لم يكن من الخيارات أعلاه.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="step-num">3</span> <span id="step3Title">فصل قبولك في الجامعة</span></h2>
+    <div class="row2">
+      <div>
+        <label id="yearLabelText" for="admitYear">السنة الهجرية</label>
+        <input type="number" id="admitYear" min="1435" max="1460" value="1446">
+      </div>
+      <div>
+        <label id="semLabelText" for="admitSem">الفصل</label>
+        <select id="admitSem">
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select>
+      </div>
+    </div>
+    <p class="hint" id="admitHintText">أدخل فصل قبولك الأصلي بالجامعة، حتى لو أجّلت أول فصل لك.</p>
+    <span class="admit-flag" id="admitFlag">—</span>
+    <div class="sys-note">
+      <span class="ic">ℹ️</span>
+      <span id="sysNoteText">تغيّر النظام الدراسي في عام 1447هـ من ثلاثة فصول سنويًا إلى فصلين فقط. تُراعي الحاسبة هذا التحوّل تلقائيًا عند حساب فصولك.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="step-num">4</span> <span id="step4Title">فصول أجّلتها أو اعتذرت عنها</span></h2>
+    <label id="deferredLabelText" for="deferred">عدد الفصول المؤجّلة (تأجيل)</label>
+    <input type="number" id="deferred" min="0" max="10" value="0">
+    <p class="hint" id="deferredHintText">الفصل المؤجَّل لا يُحسب من مدتك النظامية، فتمتد المكافأة معك فصلًا كاملًا عن كل تأجيل.</p>
+
+    <label id="withdrawnLabelText" for="withdrawn">عدد الفصول المُعتذَر عنها (اعتذار)</label>
+    <input type="number" id="withdrawn" min="0" max="10" value="0">
+    <p class="hint" id="withdrawnHintText">الفصل المُعتذَر عنه يُحسب ضمن مدتك النظامية، فلا يمنحك تمديدًا إضافيًا للمكافأة.</p>
+  </div>
+
+  <button type="button" class="btn-calc" id="calcBtn"><span class="ic">🧮</span><span id="calcBtnText">احسب / اعرف موعد انقطاع مكافأتي</span></button>
+
+  <div class="card result-card" id="resultCard">
+    <h2 id="resultTitleText">نتيجة الحساب</h2>
+    <div class="result-grid three">
+      <div class="result-box">
+        <div class="label" id="resultBox1Label">آخر فصل تُصرف فيه المكافأة</div>
+        <div class="value" id="lastTerm">—</div>
+      </div>
+      <div class="result-box">
+        <div class="label" id="resultBox2Label">الفصل المتوقع لانقطاع المكافأة</div>
+        <div class="value" id="cutoffTerm">—</div>
+      </div>
+      <div class="result-box">
+        <div class="label" id="resultBox3Label">عدد الفصول المتبقية الممولة</div>
+        <div class="value" id="totalFunded">—</div>
+      </div>
+    </div>
+    <div class="status-line status-ok" id="statusLine">أدخل بياناتك أعلاه لعرض النتيجة</div>
+  </div>
+
+  <div class="card rules">
+    <h2 id="rulesTitleText">متى تنقطع المكافأة الطلابية؟</h2>
+    <ul>
+      <li id="rule1Text">إذا كان معدلك التراكمي أقل من الحد الأدنى وهو 2 من 5.</li>
+      <li id="rule2Text">إذا تجاوزت المدة الدراسية المحددة لتخصصك.</li>
+      <li id="rule3Text">إذا اعتذرت عن فصل دراسي أو تجاوزت الفصول المسموح بتأجيلها.</li>
+    </ul>
+    <div class="note"><b id="note1LabelText">ملاحظة 1:</b> <span id="note1Text">التأجيل لا يُحسب ضمن المدة النظامية للتخرج، فالمكافأة لا تنقطع بعد تجاوز المدة النظامية وتستمر بحسب عدد الفصول المؤجلة.</span></div>
+    <div class="note"><b id="note2LabelText">ملاحظة 2:</b> <span id="note2Text">الاعتذار يُحسب ضمن المدة النظامية للتخرج، فالمكافأة تنقطع بعد تجاوز المدة النظامية لتخصصك.</span></div>
+  </div>
+
+  <div class="card excellence-card">
+    <div class="excellence-head"><span class="ic">🏅</span><span id="excTitleText">تنبيه: مكافأة التفوق لا تنقطع</span></div>
+    <p id="excText1">انقطاع المكافأة الشهرية لا يوقف مكافأة التفوق؛ فإذا كنت مستحقًا لها فستستمر صرفها.</p>
+    <div class="excellence-cond"><b id="excCondLabel">شرط الاستحقاق:</b> <span id="excText2">إكمال فصلين دراسيين متتاليين بمتوسط معدل 4.5 فأكثر (مجموع معدلي الفصلين ÷ 2 ≥ 4.5).</span></div>
+  </div>
+
+  <p class="disclaimer" id="disclaimerText">
+    هذه الحاسبة اجتهادية مبنية على التعميم الرسمي الصادر عن جامعة الإمام محمد بن سعود الإسلامية بخصوص انقطاع المكافأة، والمرجع النهائي في جميع الأحوال هو عمادة القبول والتسجيل بالجامعة.
+  </p>
+
+</div>
+
+<div class="footer">
+  <div class="uni" id="footerUniText">جامعة الإمام محمد بن سعود الإسلامية — IMAMU</div>
+  <div id="footerSubText">حاسبة توضيحية لمساعدة الطلاب على فهم نظام المكافأة الطلابية</div>
+</div>
+
+<script>
+const LANGS = [
+  {code:'ar', native:'العربية', dir:'rtl'},
+  {code:'en', native:'English', dir:'ltr'},
+  {code:'ur', native:'اردو', dir:'rtl'},
+  {code:'hi', native:'हिन्दी', dir:'ltr'},
+  {code:'fr', native:'Français', dir:'ltr'},
+  {code:'ru', native:'Русский', dir:'ltr'},
+  {code:'id', native:'Bahasa Indonesia', dir:'ltr'},
+  {code:'tl', native:'Filipino', dir:'ltr'},
+  {code:'ms', native:'Bahasa Melayu', dir:'ltr'},
+  {code:'bn', native:'বাংলা', dir:'ltr'}
+];
+
+const T = {
+ar:{
+  brand:'جامعة الإمام محمد بن سعود الإسلامية · IMAMU',
+  h1:'حاسبة انقطاع المكافأة',
+  sub:'تعرّف على موعد انقطاع مكافأتك الطلابية وفق ضوابط الجامعة، قبل أن تُفاجَأ',
+  step1:'معدلك التراكمي', gpaLabel:'المعدل التراكمي من 5',
+  gpaHint:'الحد الأدنى المطلوب لاستمرار صرف المكافأة هو 2 من 5. إذا قلّ معدلك عنه تنقطع المكافأة بصرف النظر عن الفصل.',
+  step2:'المدة النظامية لتخصصك', durationLabel:'عدد الفصول الدراسية في خطتك (بدون التأجيل أو الاعتذار)',
+  durationHint:'راجع الخطة الدراسية لتخصصك في عمادة القبول والتسجيل لمعرفة عدد الفصول الدقيق إن لم يكن من الخيارات أعلاه.',
+  durOpt:{8:'4 سنوات — 8 فصول',9:'4.5 سنة — 9 فصول',10:'5 سنوات — 10 فصول',11:'5.5 سنة — 11 فصل',12:'6 سنوات — 12 فصل'},
+  step3:'فصل قبولك في الجامعة', yearLabel:'السنة الهجرية', semLabel:'الفصل',
+  semFirst:'الأول', semSecond:'الثاني', semThird:'الثالث',
+  admitHint:'أدخل فصل قبولك الأصلي بالجامعة، حتى لو أجّلت أول فصل لك.',
+  admitFlag2:'نظام الفصلين (فصلان في السنة)', admitFlag3:'نظام الفصول الثلاثة (ثلاثة فصول في السنة)',
+  sysNote:'تغيّر النظام الدراسي في عام 1447هـ من ثلاثة فصول سنويًا إلى فصلين فقط. تُراعي الحاسبة هذا التحوّل تلقائيًا عند حساب فصولك.',
+  step4:'فصول أجّلتها أو اعتذرت عنها',
+  deferredLabel:'عدد الفصول المؤجّلة (تأجيل)',
+  deferredHint:'الفصل المؤجَّل لا يُحسب من مدتك النظامية، فتمتد المكافأة معك فصلًا كاملًا عن كل تأجيل.',
+  withdrawnLabel:'عدد الفصول المُعتذَر عنها (اعتذار)',
+  withdrawnHint:'الفصل المُعتذَر عنه يُحسب ضمن مدتك النظامية، فلا يمنحك تمديدًا إضافيًا للمكافأة.',
+  calcBtn:'احسب / اعرف موعد انقطاع مكافأتي',
+  resultTitle:'نتيجة الحساب', resultBox1:'آخر فصل تُصرف فيه المكافأة', resultBox2:'الفصل المتوقع لانقطاع المكافأة', resultBox3:'عدد الفصول المتبقية الممولة',
+  statusDefault:'يرجى إدخال جميع البيانات أعلاه، ثم الضغط على زر الحساب',
+  statusBad:'المكافأة منقطعة الآن بسبب انخفاض المعدل التراكمي عن الحد الأدنى (2 من 5)',
+  statusOk:'تُصرف المكافأة حتى نهاية هذا الفصل، بشرط استمرار معدلك عند 2 فأعلى',
+  statusOkExtra:'. الاعتذار المُدخل لا يمنحك تمديدًا إضافيًا، وهو محسوب أصلًا ضمن مدتك النظامية',
+  rulesTitle:'متى تنقطع المكافأة الطلابية؟',
+  rule1:'إذا كان معدلك التراكمي أقل من الحد الأدنى وهو 2 من 5.',
+  rule2:'إذا تجاوزت المدة الدراسية المحددة لتخصصك.',
+  rule3:'إذا اعتذرت عن فصل دراسي أو تجاوزت الفصول المسموح بتأجيلها.',
+  note1Label:'ملاحظة 1:', note1:'التأجيل لا يُحسب ضمن المدة النظامية للتخرج، فالمكافأة لا تنقطع بعد تجاوز المدة النظامية وتستمر بحسب عدد الفصول المؤجلة.',
+  note2Label:'ملاحظة 2:', note2:'الاعتذار يُحسب ضمن المدة النظامية للتخرج، فالمكافأة تنقطع بعد تجاوز المدة النظامية لتخصصك.',
+  excTitle:'تنبيه: مكافأة التفوق لا تنقطع',
+  excText1:'انقطاع المكافأة الشهرية لا يوقف مكافأة التفوق؛ فإذا كنت مستحقًا لها فستستمر صرفها.',
+  excCondLabel:'شرط الاستحقاق:',
+  excText2:'إكمال فصلين دراسيين متتاليين بمتوسط معدل 4.5 فأكثر (مجموع معدلي الفصلين ÷ 2 ≥ 4.5).',
+  disclaimer:'هذه الحاسبة اجتهادية مبنية على التعميم الرسمي الصادر عن جامعة الإمام محمد بن سعود الإسلامية بخصوص انقطاع المكافأة، والمرجع النهائي في جميع الأحوال هو عمادة القبول والتسجيل بالجامعة.',
+  footerUni:'جامعة الإمام محمد بن سعود الإسلامية — IMAMU',
+  footerSub:'حاسبة توضيحية لمساعدة الطلاب على فهم نظام المكافأة الطلابية',
+  footerDevLabel:'برمجة:',
+  semesterWord:'الفصل', hijriSuffix:'هـ', semestersUnit:'فصل', useArabicIndic:true
+},
+en:{
+  brand:'Imam Muhammad ibn Saud Islamic University · IMAMU',
+  h1:'Stipend Cut-off Calculator',
+  sub:'Find out when your student stipend stops, before it surprises you',
+  step1:'Your cumulative GPA', gpaLabel:'Cumulative GPA out of 5',
+  gpaHint:'The minimum GPA required to keep receiving the stipend is 2 out of 5. If your GPA drops below it, the stipend stops regardless of the semester.',
+  step2:'Your program\'s normal duration', durationLabel:'Number of semesters in your study plan (excluding deferrals or withdrawals)',
+  durationHint:'Check your program\'s official study plan with the Admission and Registration Deanship for the exact number of semesters if it is not among the options above.',
+  durOpt:{8:'4 years — 8 semesters',9:'4.5 years — 9 semesters',10:'5 years — 10 semesters',11:'5.5 years — 11 semesters',12:'6 years — 12 semesters'},
+  step3:'Your admission semester', yearLabel:'Hijri year', semLabel:'Semester',
+  semFirst:'First', semSecond:'Second', semThird:'Third',
+  admitHint:'Enter your original admission semester, even if you deferred your first semester.',
+  admitFlag2:'Two-semester system (2 terms/year)', admitFlag3:'Three-semester system (3 terms/year)',
+  sysNote:'The academic term system changed in 1447H from three semesters a year to two. The calculator accounts for this shift automatically.',
+  step4:'Semesters you deferred or withdrew from',
+  deferredLabel:'Number of deferred semesters',
+  deferredHint:'A deferred semester does not count toward your normal duration, so the stipend extends by one full semester for each deferral.',
+  withdrawnLabel:'Number of withdrawn semesters (excused absence)',
+  withdrawnHint:'A withdrawn semester counts toward your normal duration, so it gives you no extra extension of the stipend.',
+  calcBtn:'Calculate / Find out when my stipend stops',
+  resultTitle:'Result', resultBox1:'Last semester the stipend is paid', resultBox2:'Expected term the stipend stops', resultBox3:'Number of remaining funded semesters',
+  statusDefault:'Please fill in all the details above, then press the calculate button',
+  statusBad:'The stipend is currently cut off because your GPA is below the minimum (2 out of 5)',
+  statusOk:'The stipend is paid through the end of this semester, provided your GPA stays at 2 or above',
+  statusOkExtra:'. The withdrawals you entered do not grant an extra extension — they are already counted within your normal duration',
+  rulesTitle:'When does the student stipend stop?',
+  rule1:'If your cumulative GPA falls below the minimum of 2 out of 5.',
+  rule2:'If you exceed the specified duration of your program.',
+  rule3:'If you withdraw from a semester or exceed the allowed number of deferrals.',
+  note1Label:'Note 1:', note1:'A deferral does not count toward the normal duration for graduation, so the stipend does not stop after exceeding the normal duration — it continues according to the number of deferred semesters.',
+  note2Label:'Note 2:', note2:'A withdrawal counts toward the normal duration for graduation, so the stipend stops after exceeding the normal duration of your program.',
+  excTitle:'Note: The Excellence Award does not stop',
+  excText1:'The monthly stipend stopping does not stop the Excellence Award; if you qualify for it, it keeps being disbursed.',
+  excCondLabel:'Eligibility condition:',
+  excText2:'Completing two consecutive semesters with an average GPA of 4.5 or higher (sum of the two semester GPAs ÷ 2 ≥ 4.5).',
+  disclaimer:'This calculator is an informal aid based on the official circular issued by Imam Muhammad ibn Saud Islamic University regarding stipend cut-off. The final reference in all cases is the university\'s Admission and Registration Deanship.',
+  footerUni:'Imam Muhammad ibn Saud Islamic University — IMAMU',
+  footerSub:'An illustrative calculator to help students understand the student stipend system',
+  footerDevLabel:'Developed by:',
+  semesterWord:'Semester', hijriSuffix:'H', semestersUnit:'semesters', useArabicIndic:false
+},
+ur:{
+  brand:'امام محمد بن سعود اسلامی یونیورسٹی · IMAMU',
+  h1:'وظیفہ منقطع ہونے کا کیلکولیٹر',
+  sub:'حیران ہونے سے پہلے جان لیں کہ آپ کا طلباء وظیفہ کب بند ہوگا',
+  step1:'آپ کا مجموعی GPA', gpaLabel:'مجموعی GPA (5 میں سے)',
+  gpaHint:'وظیفہ جاری رہنے کے لیے کم از کم GPA 2 (5 میں سے) درکار ہے۔ اگر آپ کا GPA اس سے کم ہو جائے تو سمسٹر سے قطع نظر وظیفہ بند ہو جاتا ہے۔',
+  step2:'آپ کے پروگرام کی معیاری مدت', durationLabel:'آپ کے تعلیمی پلان میں سمسٹروں کی تعداد (تاخیر یا معذرت کے بغیر)',
+  durationHint:'اگر درست تعداد اوپر دیے گئے اختیارات میں نہ ہو تو داخلہ و اندراج کے شعبے سے اپنے پروگرام کا سرکاری تعلیمی پلان چیک کریں۔',
+  durOpt:{8:'4 سال — 8 سمسٹر',9:'4.5 سال — 9 سمسٹر',10:'5 سال — 10 سمسٹر',11:'5.5 سال — 11 سمسٹر',12:'6 سال — 12 سمسٹر'},
+  step3:'آپ کے داخلے کا سمسٹر', yearLabel:'ہجری سال', semLabel:'سمسٹر',
+  semFirst:'پہلا', semSecond:'دوسرا', semThird:'تیسرا',
+  admitHint:'اپنے اصل داخلے کا سمسٹر درج کریں، چاہے آپ نے پہلا سمسٹر مؤخر کیا ہو۔',
+  admitFlag2:'دو سمسٹر نظام (سال میں 2 سمسٹر)', admitFlag3:'تین سمسٹر نظام (سال میں 3 سمسٹر)',
+  sysNote:'تعلیمی نظام 1447ھ میں سالانہ تین سمسٹروں سے بدل کر صرف دو سمسٹر ہو گیا۔ کیلکولیٹر یہ تبدیلی خود بخود مدنظر رکھتا ہے۔',
+  step4:'وہ سمسٹر جو آپ نے مؤخر یا معذرت کیے',
+  deferredLabel:'مؤخر کردہ سمسٹروں کی تعداد',
+  deferredHint:'مؤخر کیا گیا سمسٹر آپ کی معیاری مدت میں شمار نہیں ہوتا، اس لیے ہر تاخیر پر وظیفہ ایک مکمل سمسٹر آگے بڑھ جاتا ہے۔',
+  withdrawnLabel:'معذرت کردہ سمسٹروں کی تعداد',
+  withdrawnHint:'معذرت کیا گیا سمسٹر آپ کی معیاری مدت میں شمار ہوتا ہے، اس لیے یہ وظیفے میں کوئی اضافی توسیع نہیں دیتا۔',
+  calcBtn:'حساب کریں / اپنے وظیفے کے بند ہونے کی تاریخ جانیں',
+  resultTitle:'نتیجہ', resultBox1:'آخری سمسٹر جس میں وظیفہ ملے گا', resultBox2:'وظیفہ بند ہونے کا متوقع سمسٹر', resultBox3:'باقی ماندہ فنڈڈ سمسٹروں کی تعداد',
+  statusDefault:'براہ کرم اوپر تمام معلومات درج کریں، پھر حساب والے بٹن پر دبائیں',
+  statusBad:'آپ کا GPA کم از کم حد (2 از 5) سے کم ہونے کی وجہ سے وظیفہ فی الحال بند ہے',
+  statusOk:'اگر آپ کا GPA 2 یا اس سے زیادہ رہے تو اس سمسٹر کے اختتام تک وظیفہ جاری رہے گا',
+  statusOkExtra:'۔ درج کردہ معذرتیں کوئی اضافی توسیع نہیں دیتیں، یہ پہلے ہی آپ کی معیاری مدت میں شمار ہیں',
+  rulesTitle:'طلباء وظیفہ کب بند ہوتا ہے؟',
+  rule1:'اگر آپ کا مجموعی GPA کم از کم حد یعنی 2 از 5 سے کم ہو جائے۔',
+  rule2:'اگر آپ اپنے پروگرام کی مقررہ مدت سے تجاوز کر جائیں۔',
+  rule3:'اگر آپ کسی سمسٹر سے معذرت کریں یا مؤخر کرنے کی مقررہ حد سے تجاوز کریں۔',
+  note1Label:'نوٹ 1:', note1:'تاخیر گریجویشن کی معیاری مدت میں شمار نہیں ہوتی، اس لیے معیاری مدت گزرنے کے بعد وظیفہ بند نہیں ہوتا بلکہ مؤخر کردہ سمسٹروں کی تعداد کے مطابق جاری رہتا ہے۔',
+  note2Label:'نوٹ 2:', note2:'معذرت گریجویشن کی معیاری مدت میں شمار ہوتی ہے، اس لیے معیاری مدت گزرنے کے بعد وظیفہ بند ہو جاتا ہے۔',
+  excTitle:'توجہ: امتیازی وظیفہ منقطع نہیں ہوتا',
+  excText1:'ماہانہ وظیفے کا بند ہونا امتیازی وظیفے کو متاثر نہیں کرتا؛ اگر آپ اس کے اہل ہیں تو یہ جاری رہے گا۔',
+  excCondLabel:'اہلیت کی شرط:',
+  excText2:'دو مسلسل سمسٹر مکمل کرنا جن کا اوسط GPA 4.5 یا اس سے زیادہ ہو (دونوں سمسٹروں کے GPA کا مجموعہ ÷ 2 ≥ 4.5)۔',
+  disclaimer:'یہ کیلکولیٹر امام محمد بن سعود اسلامی یونیورسٹی کے سرکاری اعلامیے پر مبنی ایک معاون ٹول ہے۔ حتمی حوالہ ہر صورت میں یونیورسٹی کا شعبہ داخلہ و اندراج ہے۔',
+  footerUni:'امام محمد بن سعود اسلامی یونیورسٹی — IMAMU',
+  footerSub:'طلباء کو وظیفے کے نظام کو سمجھنے میں مدد دینے کے لیے ایک وضاحتی کیلکولیٹر',
+  footerDevLabel:'پروگرامنگ:',
+  semesterWord:'سمسٹر', hijriSuffix:'ھ', semestersUnit:'سمسٹر', useArabicIndic:false
+},
+hi:{
+  brand:'इमाम मुहम्मद बिन सऊद इस्लामिक यूनिवर्सिटी · IMAMU',
+  h1:'छात्रवृत्ति समाप्ति कैलकुलेटर',
+  sub:'यह जानें कि आपकी छात्रवृत्ति कब रुकेगी, चौंकने से पहले',
+  step1:'आपका संचयी GPA', gpaLabel:'संचयी GPA (5 में से)',
+  gpaHint:'छात्रवृत्ति जारी रहने के लिए न्यूनतम GPA 2 (5 में से) आवश्यक है। यदि आपका GPA इससे कम हो जाए, तो सेमेस्टर चाहे जो भी हो, छात्रवृत्ति रुक जाती है।',
+  step2:'आपके प्रोग्राम की नियमित अवधि', durationLabel:'आपकी अध्ययन योजना में सेमेस्टरों की संख्या (स्थगन या क्षमा-प्रार्थना को छोड़कर)',
+  durationHint:'यदि सही संख्या ऊपर दिए विकल्पों में नहीं है, तो प्रवेश एवं पंजीकरण विभाग से अपने प्रोग्राम की आधिकारिक अध्ययन योजना जाँचें।',
+  durOpt:{8:'4 वर्ष — 8 सेमेस्टर',9:'4.5 वर्ष — 9 सेमेस्टर',10:'5 वर्ष — 10 सेमेस्टर',11:'5.5 वर्ष — 11 सेमेस्टर',12:'6 वर्ष — 12 सेमेस्टर'},
+  step3:'आपका प्रवेश सेमेस्टर', yearLabel:'हिजरी वर्ष', semLabel:'सेमेस्टर',
+  semFirst:'पहला', semSecond:'दूसरा', semThird:'तीसरा',
+  admitHint:'अपना मूल प्रवेश सेमेस्टर दर्ज करें, भले ही आपने पहला सेमेस्टर स्थगित किया हो।',
+  admitFlag2:'दो-सेमेस्टर प्रणाली (वर्ष में 2 सेमेस्टर)', admitFlag3:'तीन-सेमेस्टर प्रणाली (वर्ष में 3 सेमेस्टर)',
+  sysNote:'शैक्षणिक सत्र प्रणाली 1447हि. में वार्षिक तीन सेमेस्टर से बदलकर केवल दो सेमेस्टर हो गई। कैलकुलेटर इस बदलाव को स्वतः ध्यान में रखता है।',
+  step4:'वे सेमेस्टर जो आपने स्थगित किए या जिनसे क्षमा-प्रार्थना की',
+  deferredLabel:'स्थगित सेमेस्टरों की संख्या',
+  deferredHint:'स्थगित सेमेस्टर आपकी नियमित अवधि में नहीं गिना जाता, इसलिए हर स्थगन पर छात्रवृत्ति एक पूरा सेमेस्टर बढ़ जाती है।',
+  withdrawnLabel:'क्षमा-प्रार्थना (वापसी) सेमेस्टरों की संख्या',
+  withdrawnHint:'क्षमा-प्रार्थना वाला सेमेस्टर आपकी नियमित अवधि में गिना जाता है, इसलिए यह छात्रवृत्ति में कोई अतिरिक्त विस्तार नहीं देता।',
+  calcBtn:'गणना करें / जानें मेरी छात्रवृत्ति कब रुकेगी',
+  resultTitle:'परिणाम', resultBox1:'अंतिम सेमेस्टर जिसमें छात्रवृत्ति मिलेगी', resultBox2:'छात्रवृत्ति रुकने का अनुमानित सेमेस्टर', resultBox3:'शेष वित्तपोषित सेमेस्टरों की संख्या',
+  statusDefault:'कृपया ऊपर सारी जानकारी भरें, फिर गणना बटन दबाएँ',
+  statusBad:'आपका GPA न्यूनतम सीमा (2 में से 5) से कम होने के कारण छात्रवृत्ति फिलहाल रुकी हुई है',
+  statusOk:'यदि आपका GPA 2 या उससे अधिक रहे, तो इस सेमेस्टर के अंत तक छात्रवृत्ति दी जाएगी',
+  statusOkExtra:'। दर्ज की गई क्षमा-प्रार्थनाएँ कोई अतिरिक्त विस्तार नहीं देतीं — ये पहले से ही आपकी नियमित अवधि में शामिल हैं',
+  rulesTitle:'छात्रवृत्ति कब रुकती है?',
+  rule1:'यदि आपका संचयी GPA न्यूनतम सीमा 2 (5 में से) से कम हो जाए।',
+  rule2:'यदि आप अपने प्रोग्राम की निर्धारित अवधि से अधिक हो जाएँ।',
+  rule3:'यदि आप किसी सेमेस्टर से क्षमा-प्रार्थना करें या अनुमत स्थगन सीमा से अधिक हो जाएँ।',
+  note1Label:'नोट 1:', note1:'स्थगन स्नातक की नियमित अवधि में नहीं गिना जाता, इसलिए नियमित अवधि पार होने के बाद भी छात्रवृत्ति नहीं रुकती — यह स्थगित सेमेस्टरों की संख्या के अनुसार जारी रहती है।',
+  note2Label:'नोट 2:', note2:'क्षमा-प्रार्थना स्नातक की नियमित अवधि में गिनी जाती है, इसलिए नियमित अवधि पार होने के बाद छात्रवृत्ति रुक जाती है।',
+  excTitle:'ध्यान दें: उत्कृष्टता पुरस्कार नहीं रुकता',
+  excText1:'मासिक छात्रवृत्ति रुकने से उत्कृष्टता पुरस्कार नहीं रुकता; यदि आप इसके पात्र हैं तो यह जारी रहेगा।',
+  excCondLabel:'पात्रता की शर्त:',
+  excText2:'लगातार दो सेमेस्टर पूरे करना जिनका औसत GPA 4.5 या अधिक हो (दोनों सेमेस्टर के GPA का योग ÷ 2 ≥ 4.5)।',
+  disclaimer:'यह कैलकुलेटर इमाम मुहम्मद बिन सऊद इस्लामिक यूनिवर्सिटी द्वारा जारी आधिकारिक परिपत्र पर आधारित एक सहायक उपकरण है। अंतिम संदर्भ हर स्थिति में विश्वविद्यालय का प्रवेश एवं पंजीकरण विभाग है।',
+  footerUni:'इमाम मुहम्मद बिन सऊद इस्लामिक यूनिवर्सिटी — IMAMU',
+  footerSub:'छात्रों को छात्रवृत्ति प्रणाली समझने में मदद के लिए एक व्याख्यात्मक कैलकुलेटर',
+  footerDevLabel:'प्रोग्रामिंग:',
+  semesterWord:'सेमेस्टर', hijriSuffix:'हि.', semestersUnit:'सेमेस्टर', useArabicIndic:false
+},
+fr:{
+  brand:'Université islamique Imam Mohammed ibn Saoud · IMAMU',
+  h1:'Calculateur d\'arrêt de la bourse',
+  sub:'Découvrez quand votre bourse étudiante s\'arrête, avant d\'être surpris',
+  step1:'Votre moyenne cumulative', gpaLabel:'Moyenne cumulative sur 5',
+  gpaHint:'La moyenne minimale requise pour continuer à percevoir la bourse est de 2 sur 5. Si votre moyenne descend en dessous, la bourse s\'arrête quel que soit le semestre.',
+  step2:'Durée normale de votre filière', durationLabel:'Nombre de semestres dans votre plan d\'études (hors report ou retrait)',
+  durationHint:'Vérifiez le plan d\'études officiel de votre filière auprès du Doyenné des admissions et des inscriptions si le nombre exact n\'est pas parmi les options ci-dessus.',
+  durOpt:{8:'4 ans — 8 semestres',9:'4,5 ans — 9 semestres',10:'5 ans — 10 semestres',11:'5,5 ans — 11 semestres',12:'6 ans — 12 semestres'},
+  step3:'Votre semestre d\'admission', yearLabel:'Année hégirienne', semLabel:'Semestre',
+  semFirst:'Premier', semSecond:'Deuxième', semThird:'Troisième',
+  admitHint:'Indiquez votre semestre d\'admission d\'origine, même si vous avez reporté votre premier semestre.',
+  admitFlag2:'Système à deux semestres (2 semestres/an)', admitFlag3:'Système à trois semestres (3 semestres/an)',
+  sysNote:'Le système des semestres a changé en 1447H, passant de trois semestres par an à deux seulement. Le calculateur tient compte automatiquement de ce changement.',
+  step4:'Semestres reportés ou retirés',
+  deferredLabel:'Nombre de semestres reportés',
+  deferredHint:'Un semestre reporté ne compte pas dans votre durée normale, donc la bourse s\'étend d\'un semestre complet pour chaque report.',
+  withdrawnLabel:'Nombre de semestres retirés (excuse)',
+  withdrawnHint:'Un semestre retiré compte dans votre durée normale, il ne vous donne donc aucune prolongation supplémentaire de la bourse.',
+  calcBtn:'Calculer / Savoir quand ma bourse s\'arrête',
+  resultTitle:'Résultat', resultBox1:'Dernier semestre où la bourse est versée', resultBox2:'Semestre prévu de l\'arrêt de la bourse', resultBox3:'Nombre de semestres financés restants',
+  statusDefault:'Veuillez renseigner toutes les informations ci-dessus, puis appuyer sur le bouton de calcul',
+  statusBad:'La bourse est actuellement arrêtée car votre moyenne est inférieure au minimum (2 sur 5)',
+  statusOk:'La bourse est versée jusqu\'à la fin de ce semestre, à condition que votre moyenne reste à 2 ou plus',
+  statusOkExtra:'. Les retraits saisis ne donnent aucune prolongation supplémentaire — ils sont déjà comptés dans votre durée normale',
+  rulesTitle:'Quand la bourse étudiante s\'arrête-t-elle ?',
+  rule1:'Si votre moyenne cumulative descend en dessous du minimum de 2 sur 5.',
+  rule2:'Si vous dépassez la durée spécifiée de votre filière.',
+  rule3:'Si vous vous retirez d\'un semestre ou dépassez le nombre de reports autorisés.',
+  note1Label:'Remarque 1 :', note1:'Un report ne compte pas dans la durée normale d\'obtention du diplôme, donc la bourse ne s\'arrête pas après le dépassement de la durée normale — elle continue selon le nombre de semestres reportés.',
+  note2Label:'Remarque 2 :', note2:'Un retrait compte dans la durée normale d\'obtention du diplôme, donc la bourse s\'arrête après le dépassement de la durée normale de votre filière.',
+  excTitle:'Remarque : la prime d\'excellence ne s\'arrête pas',
+  excText1:'L\'arrêt de la bourse mensuelle n\'arrête pas la prime d\'excellence ; si vous y êtes éligible, elle continue d\'être versée.',
+  excCondLabel:'Condition d\'éligibilité :',
+  excText2:'Terminer deux semestres consécutifs avec une moyenne de 4,5 ou plus (somme des deux moyennes ÷ 2 ≥ 4,5).',
+  disclaimer:'Ce calculateur est un outil indicatif basé sur la circulaire officielle publiée par l\'Université islamique Imam Mohammed ibn Saoud concernant l\'arrêt de la bourse. La référence finale reste, dans tous les cas, le Doyenné des admissions et des inscriptions de l\'université.',
+  footerUni:'Université islamique Imam Mohammed ibn Saoud — IMAMU',
+  footerSub:'Un calculateur explicatif pour aider les étudiants à comprendre le système de bourse',
+  footerDevLabel:'Développé par :',
+  semesterWord:'Semestre', hijriSuffix:'H', semestersUnit:'semestres', useArabicIndic:false
+},
+ru:{
+  brand:'Исламский университет имени имама Мухаммада ибн Сауда · IMAMU',
+  h1:'Калькулятор прекращения стипендии',
+  sub:'Узнайте, когда прекратится выплата вашей стипендии, прежде чем это станет неожиданностью',
+  step1:'Ваш средний балл (GPA)', gpaLabel:'Средний балл из 5',
+  gpaHint:'Минимальный балл для продолжения выплаты стипендии — 2 из 5. Если ваш балл станет ниже, стипендия прекращается независимо от семестра.',
+  step2:'Нормативный срок обучения по вашей специальности', durationLabel:'Количество семестров в вашем учебном плане (без учёта отсрочек или отчислений по уважительной причине)',
+  durationHint:'Если точное количество отсутствует среди вариантов выше, уточните официальный учебный план на факультете приёма и регистрации.',
+  durOpt:{8:'4 года — 8 семестров',9:'4,5 года — 9 семестров',10:'5 лет — 10 семестров',11:'5,5 года — 11 семестров',12:'6 лет — 12 семестров'},
+  step3:'Семестр вашего зачисления', yearLabel:'Год по хиджре', semLabel:'Семестр',
+  semFirst:'Первый', semSecond:'Второй', semThird:'Третий',
+  admitHint:'Укажите семестр вашего первоначального зачисления, даже если вы отложили первый семестр.',
+  admitFlag2:'Система из двух семестров (2 семестра в год)', admitFlag3:'Система из трёх семестров (3 семестра в год)',
+  sysNote:'В 1447 г.х. система обучения изменилась: вместо трёх семестров в год стало два. Калькулятор автоматически учитывает этот переход.',
+  step4:'Отложенные или пропущенные по уважительной причине семестры',
+  deferredLabel:'Количество отложенных семестров',
+  deferredHint:'Отложенный семестр не засчитывается в нормативный срок, поэтому за каждую отсрочку выплата стипендии продлевается на полный семестр.',
+  withdrawnLabel:'Количество семестров, пропущенных по уважительной причине',
+  withdrawnHint:'Такой семестр засчитывается в нормативный срок, поэтому он не даёт дополнительного продления стипендии.',
+  calcBtn:'Рассчитать / узнать, когда прекратится моя стипендия',
+  resultTitle:'Результат', resultBox1:'Последний семестр выплаты стипендии', resultBox2:'Ожидаемый семестр прекращения стипендии', resultBox3:'Количество оставшихся финансируемых семестров',
+  statusDefault:'Заполните все данные выше, затем нажмите кнопку расчёта',
+  statusBad:'Стипендия в настоящее время прекращена из-за того, что ваш балл ниже минимума (2 из 5)',
+  statusOk:'Стипендия выплачивается до конца этого семестра при условии, что ваш балл останется не ниже 2',
+  statusOkExtra:'. Введённые пропуски по уважительной причине не дают дополнительного продления — они уже учтены в нормативном сроке',
+  rulesTitle:'Когда прекращается выплата студенческой стипендии?',
+  rule1:'Если ваш средний балл станет ниже минимума в 2 из 5.',
+  rule2:'Если вы превысите установленный срок обучения по вашей специальности.',
+  rule3:'Если вы пропустите семестр по уважительной причине или превысите допустимое число отсрочек.',
+  note1Label:'Примечание 1:', note1:'Отсрочка не засчитывается в нормативный срок обучения, поэтому стипендия не прекращается после превышения нормативного срока — она продолжается в соответствии с количеством отложенных семестров.',
+  note2Label:'Примечание 2:', note2:'Пропуск по уважительной причине засчитывается в нормативный срок обучения, поэтому стипендия прекращается после превышения нормативного срока по вашей специальности.',
+  excTitle:'Внимание: стипендия за отличие не прекращается',
+  excText1:'Прекращение ежемесячной стипендии не влияет на стипендию за отличие; если вы имеете на неё право, она продолжит выплачиваться.',
+  excCondLabel:'Условие получения:',
+  excText2:'Завершение двух подряд идущих семестров со средним баллом 4,5 или выше (сумма баллов за оба семестра ÷ 2 ≥ 4,5).',
+  disclaimer:'Этот калькулятор носит справочный характер и основан на официальном циркуляре Исламского университета имени имама Мухаммада ибн Сауда о прекращении стипендии. Окончательным источником во всех случаях является факультет приёма и регистрации университета.',
+  footerUni:'Исламский университет имени имама Мухаммада ибн Сауда — IMAMU',
+  footerSub:'Наглядный калькулятор, помогающий студентам понять систему студенческой стипендии',
+  footerDevLabel:'Разработчик:',
+  semesterWord:'Семестр', hijriSuffix:'г.х.', semestersUnit:'семестров', useArabicIndic:false
+},
+id:{
+  brand:'Universitas Islam Imam Muhammad bin Saud · IMAMU',
+  h1:'Kalkulator Penghentian Beasiswa',
+  sub:'Ketahui kapan beasiswa mahasiswa Anda akan berhenti, sebelum Anda terkejut',
+  step1:'IPK kumulatif Anda', gpaLabel:'IPK kumulatif dari 5',
+  gpaHint:'IPK minimum yang diperlukan agar beasiswa terus dibayarkan adalah 2 dari 5. Jika IPK Anda turun di bawah itu, beasiswa berhenti terlepas dari semester.',
+  step2:'Masa studi normal program Anda', durationLabel:'Jumlah semester dalam rencana studi Anda (tidak termasuk penundaan atau pengunduran diri)',
+  durationHint:'Periksa rencana studi resmi program Anda di Dekanat Penerimaan dan Pendaftaran jika jumlah pastinya tidak ada dalam pilihan di atas.',
+  durOpt:{8:'4 tahun — 8 semester',9:'4,5 tahun — 9 semester',10:'5 tahun — 10 semester',11:'5,5 tahun — 11 semester',12:'6 tahun — 12 semester'},
+  step3:'Semester penerimaan Anda', yearLabel:'Tahun Hijriah', semLabel:'Semester',
+  semFirst:'Pertama', semSecond:'Kedua', semThird:'Ketiga',
+  admitHint:'Masukkan semester penerimaan awal Anda, meskipun Anda menunda semester pertama.',
+  admitFlag2:'Sistem dua semester (2 semester/tahun)', admitFlag3:'Sistem tiga semester (3 semester/tahun)',
+  sysNote:'Sistem semester berubah pada tahun 1447H dari tiga semester per tahun menjadi hanya dua. Kalkulator memperhitungkan perubahan ini secara otomatis.',
+  step4:'Semester yang Anda tunda atau tarik diri',
+  deferredLabel:'Jumlah semester yang ditunda',
+  deferredHint:'Semester yang ditunda tidak dihitung dalam masa studi normal Anda, sehingga beasiswa diperpanjang satu semester penuh untuk setiap penundaan.',
+  withdrawnLabel:'Jumlah semester penarikan diri (izin)',
+  withdrawnHint:'Semester penarikan diri dihitung dalam masa studi normal Anda, sehingga tidak memberi perpanjangan tambahan pada beasiswa.',
+  calcBtn:'Hitung / Ketahui kapan beasiswa saya berhenti',
+  resultTitle:'Hasil', resultBox1:'Semester terakhir beasiswa dibayarkan', resultBox2:'Semester yang diperkirakan beasiswa berhenti', resultBox3:'Jumlah semester tersisa yang dibiayai',
+  statusDefault:'Silakan isi semua data di atas, lalu tekan tombol hitung',
+  statusBad:'Beasiswa saat ini terhenti karena IPK Anda di bawah batas minimum (2 dari 5)',
+  statusOk:'Beasiswa dibayarkan hingga akhir semester ini, selama IPK Anda tetap 2 atau lebih',
+  statusOkExtra:'. Penarikan diri yang Anda masukkan tidak memberikan perpanjangan tambahan — sudah termasuk dalam masa studi normal Anda',
+  rulesTitle:'Kapan beasiswa mahasiswa berhenti?',
+  rule1:'Jika IPK kumulatif Anda turun di bawah batas minimum 2 dari 5.',
+  rule2:'Jika Anda melebihi masa studi yang ditentukan untuk program Anda.',
+  rule3:'Jika Anda menarik diri dari suatu semester atau melebihi batas penundaan yang diizinkan.',
+  note1Label:'Catatan 1:', note1:'Penundaan tidak dihitung dalam masa studi normal untuk kelulusan, sehingga beasiswa tidak berhenti setelah melebihi masa studi normal — beasiswa berlanjut sesuai jumlah semester yang ditunda.',
+  note2Label:'Catatan 2:', note2:'Penarikan diri dihitung dalam masa studi normal untuk kelulusan, sehingga beasiswa berhenti setelah melebihi masa studi normal program Anda.',
+  excTitle:'Perhatian: Penghargaan Keunggulan tidak berhenti',
+  excText1:'Berhentinya beasiswa bulanan tidak menghentikan Penghargaan Keunggulan; jika Anda memenuhi syarat, penghargaan ini akan terus dibayarkan.',
+  excCondLabel:'Syarat kelayakan:',
+  excText2:'Menyelesaikan dua semester berturut-turut dengan rata-rata IPK 4,5 atau lebih (jumlah IPK kedua semester ÷ 2 ≥ 4,5).',
+  disclaimer:'Kalkulator ini bersifat informatif berdasarkan surat edaran resmi dari Universitas Islam Imam Muhammad bin Saud mengenai penghentian beasiswa. Rujukan akhir dalam semua kasus adalah Dekanat Penerimaan dan Pendaftaran universitas.',
+  footerUni:'Universitas Islam Imam Muhammad bin Saud — IMAMU',
+  footerSub:'Kalkulator ilustratif untuk membantu mahasiswa memahami sistem beasiswa mahasiswa',
+  footerDevLabel:'Dikembangkan oleh:',
+  semesterWord:'Semester', hijriSuffix:'H', semestersUnit:'semester', useArabicIndic:false
+},
+tl:{
+  brand:'Imam Muhammad ibn Saud Islamic University · IMAMU',
+  h1:'Calculator ng Pagtigil ng Stipendyo',
+  sub:'Alamin kung kailan titigil ang stipendyo mo bilang estudyante, bago ka pa magulat',
+  step1:'Ang iyong cumulative GPA', gpaLabel:'Cumulative GPA sa 5',
+  gpaHint:'Ang pinakamababang GPA na kailangan para magpatuloy ang stipendyo ay 2 sa 5. Kapag bumaba ang GPA mo dito, titigil ang stipendyo anuman ang semestre.',
+  step2:'Karaniwang tagal ng iyong programa', durationLabel:'Bilang ng semestre sa study plan mo (hindi kasama ang pagpapaliban o pag-withdraw)',
+  durationHint:'Suriin ang opisyal na study plan ng iyong programa sa Admission and Registration Deanship kung wala sa mga pagpipiliang nasa itaas ang eksaktong bilang.',
+  durOpt:{8:'4 taon — 8 semestre',9:'4.5 taon — 9 semestre',10:'5 taon — 10 semestre',11:'5.5 taon — 11 semestre',12:'6 taon — 12 semestre'},
+  step3:'Semestre ng iyong pagtanggap', yearLabel:'Taon ng Hijri', semLabel:'Semestre',
+  semFirst:'Una', semSecond:'Ikalawa', semThird:'Ikatlo',
+  admitHint:'Ilagay ang orihinal na semestre ng iyong pagtanggap, kahit na ipinagpaliban mo ang unang semestre.',
+  admitFlag2:'Dalawang-semestre na sistema (2 semestre/taon)', admitFlag3:'Tatlong-semestre na sistema (3 semestre/taon)',
+  sysNote:'Nagbago ang sistema ng semestre noong 1447H mula tatlong semestre kada taon patungong dalawa na lamang. Awtomatikong isinasaalang-alang ito ng calculator.',
+  step4:'Mga semestreng ipinagpaliban o kinuha ang withdrawal',
+  deferredLabel:'Bilang ng semestreng ipinagpaliban',
+  deferredHint:'Ang ipinagpalibang semestre ay hindi kasama sa karaniwang tagal, kaya humahaba ang stipendyo ng isang buong semestre kada pagpapaliban.',
+  withdrawnLabel:'Bilang ng semestreng kinuhaan ng withdrawal (dahilan)',
+  withdrawnHint:'Ang semestreng may withdrawal ay kasama sa karaniwang tagal, kaya wala itong karagdagang extension sa stipendyo.',
+  calcBtn:'Kalkulahin / Alamin kung kailan titigil ang stipendyo ko',
+  resultTitle:'Resulta', resultBox1:'Huling semestreng babayaran ang stipendyo', resultBox2:'Inaasahang semestre ng pagtigil ng stipendyo', resultBox3:'Bilang ng natitirang semestreng may pondo',
+  statusDefault:'Pakilagay ang lahat ng detalye sa itaas, pagkatapos ay pindutin ang buton ng pagkalkula',
+  statusBad:'Kasalukuyang naka-tigil ang stipendyo dahil mas mababa ang GPA mo sa pinakamababang kailangan (2 sa 5)',
+  statusOk:'Babayaran ang stipendyo hanggang matapos ang semestreng ito, basta manatili ang GPA mo sa 2 o mas mataas',
+  statusOkExtra:'. Ang mga withdrawal na inilagay mo ay hindi nagbibigay ng karagdagang extension — kasama na ito sa karaniwang tagal mo',
+  rulesTitle:'Kailan titigil ang stipendyo ng estudyante?',
+  rule1:'Kapag bumaba ang cumulative GPA mo sa pinakamababang 2 sa 5.',
+  rule2:'Kapag nalampasan mo ang itinakdang tagal ng iyong programa.',
+  rule3:'Kapag kumuha ka ng withdrawal sa isang semestre o nalampasan mo ang pinapayagang bilang ng pagpapaliban.',
+  note1Label:'Tala 1:', note1:'Ang pagpapaliban ay hindi kasama sa karaniwang tagal para sa graduation, kaya hindi titigil ang stipendyo pagkatapos malampasan ang karaniwang tagal — magpapatuloy ito ayon sa bilang ng semestreng ipinagpaliban.',
+  note2Label:'Tala 2:', note2:'Ang withdrawal ay kasama sa karaniwang tagal para sa graduation, kaya titigil ang stipendyo pagkatapos malampasan ang karaniwang tagal ng iyong programa.',
+  excTitle:'Paalala: Hindi titigil ang Gantimpala sa Katangi-tanging Marka',
+  excText1:'Ang pagtigil ng buwanang stipendyo ay hindi humihinto sa Gantimpala sa Katangi-tanging Marka; kung kwalipikado ka, magpapatuloy ito.',
+  excCondLabel:'Kondisyon ng pagiging kwalipikado:',
+  excText2:'Pagtatapos ng dalawang magkasunod na semestre na may average na GPA na 4.5 o mas mataas (kabuuan ng GPA ng dalawang semestre ÷ 2 ≥ 4.5).',
+  disclaimer:'Ang calculator na ito ay tulong na batay sa opisyal na circular na inilabas ng Imam Muhammad ibn Saud Islamic University tungkol sa pagtigil ng stipendyo. Ang huling sanggunian sa lahat ng pagkakataon ay ang Admission and Registration Deanship ng unibersidad.',
+  footerUni:'Imam Muhammad ibn Saud Islamic University — IMAMU',
+  footerSub:'Isang malinaw na calculator para tulungan ang mga estudyante na maintindihan ang sistema ng stipendyo',
+  footerDevLabel:'Ginawa ni:',
+  semesterWord:'Semestre', hijriSuffix:'H', semestersUnit:'semestre', useArabicIndic:false
+},
+ms:{
+  brand:'Universiti Islam Imam Muhammad ibn Saud · IMAMU',
+  h1:'Kalkulator Penamatan Biasiswa',
+  sub:'Ketahui bila biasiswa pelajar anda akan tamat, sebelum anda terkejut',
+  step1:'PNGK kumulatif anda', gpaLabel:'PNGK kumulatif daripada 5',
+  gpaHint:'PNGK minimum yang diperlukan untuk terus menerima biasiswa ialah 2 daripada 5. Jika PNGK anda turun di bawah itu, biasiswa akan tamat tanpa mengira semester.',
+  step2:'Tempoh normal program anda', durationLabel:'Bilangan semester dalam pelan pengajian anda (tidak termasuk penangguhan atau penarikan diri)',
+  durationHint:'Semak pelan pengajian rasmi program anda di Dekanat Kemasukan dan Pendaftaran jika bilangan sebenar tiada dalam pilihan di atas.',
+  durOpt:{8:'4 tahun — 8 semester',9:'4.5 tahun — 9 semester',10:'5 tahun — 10 semester',11:'5.5 tahun — 11 semester',12:'6 tahun — 12 semester'},
+  step3:'Semester kemasukan anda', yearLabel:'Tahun Hijrah', semLabel:'Semester',
+  semFirst:'Pertama', semSecond:'Kedua', semThird:'Ketiga',
+  admitHint:'Masukkan semester kemasukan asal anda, walaupun anda menangguhkan semester pertama.',
+  admitFlag2:'Sistem dua semester (2 semester/tahun)', admitFlag3:'Sistem tiga semester (3 semester/tahun)',
+  sysNote:'Sistem semester berubah pada tahun 1447H daripada tiga semester setahun kepada dua sahaja. Kalkulator mengambil kira perubahan ini secara automatik.',
+  step4:'Semester yang anda tangguhkan atau tarik diri',
+  deferredLabel:'Bilangan semester ditangguhkan',
+  deferredHint:'Semester yang ditangguhkan tidak dikira dalam tempoh normal anda, jadi biasiswa dilanjutkan satu semester penuh bagi setiap penangguhan.',
+  withdrawnLabel:'Bilangan semester penarikan diri (keuzuran)',
+  withdrawnHint:'Semester penarikan diri dikira dalam tempoh normal anda, jadi ia tidak memberi lanjutan tambahan kepada biasiswa.',
+  calcBtn:'Kira / Ketahui bila biasiswa saya akan tamat',
+  resultTitle:'Keputusan', resultBox1:'Semester terakhir biasiswa dibayar', resultBox2:'Semester dijangka biasiswa tamat', resultBox3:'Bilangan semester berbaki yang dibiayai',
+  statusDefault:'Sila isikan semua maklumat di atas, kemudian tekan butang kira',
+  statusBad:'Biasiswa kini terhenti kerana PNGK anda di bawah minimum (2 daripada 5)',
+  statusOk:'Biasiswa dibayar sehingga akhir semester ini, dengan syarat PNGK anda kekal 2 atau lebih',
+  statusOkExtra:'. Penarikan diri yang dimasukkan tidak memberikan lanjutan tambahan — ia sudah dikira dalam tempoh normal anda',
+  rulesTitle:'Bila biasiswa pelajar akan tamat?',
+  rule1:'Jika PNGK kumulatif anda turun di bawah minimum 2 daripada 5.',
+  rule2:'Jika anda melebihi tempoh pengajian yang ditetapkan untuk program anda.',
+  rule3:'Jika anda menarik diri daripada satu semester atau melebihi had penangguhan yang dibenarkan.',
+  note1Label:'Nota 1:', note1:'Penangguhan tidak dikira dalam tempoh normal untuk bergraduat, jadi biasiswa tidak tamat selepas melebihi tempoh normal — ia diteruskan mengikut bilangan semester yang ditangguhkan.',
+  note2Label:'Nota 2:', note2:'Penarikan diri dikira dalam tempoh normal untuk bergraduat, jadi biasiswa tamat selepas melebihi tempoh normal program anda.',
+  excTitle:'Perhatian: Anugerah Kecemerlangan tidak terhenti',
+  excText1:'Penamatan biasiswa bulanan tidak menghentikan Anugerah Kecemerlangan; jika anda layak, ia akan terus dibayar.',
+  excCondLabel:'Syarat kelayakan:',
+  excText2:'Menamatkan dua semester berturut-turut dengan purata PNGK 4.5 atau lebih (jumlah PNGK dua semester ÷ 2 ≥ 4.5).',
+  disclaimer:'Kalkulator ini adalah alat rujukan berdasarkan pekeliling rasmi yang dikeluarkan oleh Universiti Islam Imam Muhammad ibn Saud berkenaan penamatan biasiswa. Rujukan akhir dalam semua keadaan ialah Dekanat Kemasukan dan Pendaftaran universiti.',
+  footerUni:'Universiti Islam Imam Muhammad ibn Saud — IMAMU',
+  footerSub:'Kalkulator penerangan untuk membantu pelajar memahami sistem biasiswa pelajar',
+  footerDevLabel:'Dibangunkan oleh:',
+  semesterWord:'Semester', hijriSuffix:'H', semestersUnit:'semester', useArabicIndic:false
+},
+bn:{
+  brand:'ইমাম মুহাম্মদ বিন সাউদ ইসলামিক ইউনিভার্সিটি · IMAMU',
+  h1:'উপবৃত্তি বন্ধের ক্যালকুলেটর',
+  sub:'অবাক হওয়ার আগেই জেনে নিন আপনার শিক্ষার্থী উপবৃত্তি কখন বন্ধ হবে',
+  step1:'আপনার সামগ্রিক GPA', gpaLabel:'সামগ্রিক GPA (৫ এর মধ্যে)',
+  gpaHint:'উপবৃত্তি চালু থাকার জন্য ন্যূনতম GPA প্রয়োজন ৫ এর মধ্যে ২। এর চেয়ে কম হলে সেমিস্টার নির্বিশেষে উপবৃত্তি বন্ধ হয়ে যাবে।',
+  step2:'আপনার প্রোগ্রামের স্বাভাবিক মেয়াদ', durationLabel:'আপনার অধ্যয়ন পরিকল্পনায় সেমিস্টারের সংখ্যা (স্থগিতকরণ বা প্রত্যাহার ছাড়া)',
+  durationHint:'সঠিক সংখ্যা উপরের বিকল্পগুলোতে না থাকলে ভর্তি ও নিবন্ধন বিভাগে আপনার প্রোগ্রামের অফিসিয়াল অধ্যয়ন পরিকল্পনা যাচাই করুন।',
+  durOpt:{8:'৪ বছর — ৮ সেমিস্টার',9:'৪.৫ বছর — ৯ সেমিস্টার',10:'৫ বছর — ১০ সেমিস্টার',11:'৫.৫ বছর — ১১ সেমিস্টার',12:'৬ বছর — ১২ সেমিস্টার'},
+  step3:'আপনার ভর্তির সেমিস্টার', yearLabel:'হিজরি বছর', semLabel:'সেমিস্টার',
+  semFirst:'প্রথম', semSecond:'দ্বিতীয়', semThird:'তৃতীয়',
+  admitHint:'আপনার মূল ভর্তির সেমিস্টার লিখুন, এমনকি যদি আপনি প্রথম সেমিস্টার স্থগিত করে থাকেন।',
+  admitFlag2:'দুই-সেমিস্টার পদ্ধতি (বছরে ২ সেমিস্টার)', admitFlag3:'তিন-সেমিস্টার পদ্ধতি (বছরে ৩ সেমিস্টার)',
+  sysNote:'১৪৪৭ হিজরি সালে একাডেমিক পদ্ধতি বছরে তিন সেমিস্টার থেকে বদলে মাত্র দুই সেমিস্টারে পরিণত হয়েছে। ক্যালকুলেটর এই পরিবর্তন স্বয়ংক্রিয়ভাবে বিবেচনা করে।',
+  step4:'যেসব সেমিস্টার আপনি স্থগিত করেছেন বা প্রত্যাহার করেছেন',
+  deferredLabel:'স্থগিত সেমিস্টারের সংখ্যা',
+  deferredHint:'স্থগিত সেমিস্টার আপনার স্বাভাবিক মেয়াদে গণনা করা হয় না, তাই প্রতিটি স্থগিতকরণে উপবৃত্তি এক সম্পূর্ণ সেমিস্টার বৃদ্ধি পায়।',
+  withdrawnLabel:'প্রত্যাহারকৃত সেমিস্টারের সংখ্যা (ওজর)',
+  withdrawnHint:'প্রত্যাহারকৃত সেমিস্টার আপনার স্বাভাবিক মেয়াদে গণনা করা হয়, তাই এটি উপবৃত্তিতে কোনো অতিরিক্ত সম্প্রসারণ দেয় না।',
+  calcBtn:'হিসাব করুন / জানুন আমার উপবৃত্তি কবে বন্ধ হবে',
+  resultTitle:'ফলাফল', resultBox1:'যে শেষ সেমিস্টারে উপবৃত্তি প্রদান করা হবে', resultBox2:'উপবৃত্তি বন্ধ হওয়ার প্রত্যাশিত সেমিস্টার', resultBox3:'অবশিষ্ট অর্থায়িত সেমিস্টারের সংখ্যা',
+  statusDefault:'অনুগ্রহ করে উপরের সব তথ্য পূরণ করুন, তারপর হিসাব বোতাম চাপুন',
+  statusBad:'আপনার GPA ন্যূনতম সীমার (৫ এর মধ্যে ২) চেয়ে কম হওয়ায় উপবৃত্তি বর্তমানে বন্ধ রয়েছে',
+  statusOk:'আপনার GPA ২ বা তার বেশি থাকলে এই সেমিস্টারের শেষ পর্যন্ত উপবৃত্তি প্রদান করা হবে',
+  statusOkExtra:'। প্রবেশ করানো প্রত্যাহারগুলো কোনো অতিরিক্ত সম্প্রসারণ দেয় না — সেগুলো ইতিমধ্যে আপনার স্বাভাবিক মেয়াদে অন্তর্ভুক্ত',
+  rulesTitle:'শিক্ষার্থী উপবৃত্তি কখন বন্ধ হয়?',
+  rule1:'যদি আপনার সামগ্রিক GPA ন্যূনতম সীমা ৫ এর মধ্যে ২ এর নিচে নেমে যায়।',
+  rule2:'যদি আপনি আপনার প্রোগ্রামের নির্ধারিত মেয়াদ অতিক্রম করেন।',
+  rule3:'যদি আপনি কোনো সেমিস্টার থেকে প্রত্যাহার করেন বা অনুমোদিত স্থগিতকরণের সংখ্যা অতিক্রম করেন।',
+  note1Label:'নোট ১:', note1:'স্থগিতকরণ স্নাতকের স্বাভাবিক মেয়াদে গণনা করা হয় না, তাই স্বাভাবিক মেয়াদ অতিক্রম করার পরও উপবৃত্তি বন্ধ হয় না — এটি স্থগিত সেমিস্টারের সংখ্যা অনুযায়ী চলতে থাকে।',
+  note2Label:'নোট ২:', note2:'প্রত্যাহার স্নাতকের স্বাভাবিক মেয়াদে গণনা করা হয়, তাই স্বাভাবিক মেয়াদ অতিক্রম করার পর উপবৃত্তি বন্ধ হয়ে যায়।',
+  excTitle:'লক্ষ্য করুন: শ্রেষ্ঠত্ব উপবৃত্তি বন্ধ হয় না',
+  excText1:'মাসিক উপবৃত্তি বন্ধ হলেও শ্রেষ্ঠত্ব উপবৃত্তি বন্ধ হয় না; আপনি যোগ্য হলে তা চলতে থাকবে।',
+  excCondLabel:'যোগ্যতার শর্ত:',
+  excText2:'টানা দুই সেমিস্টার সম্পন্ন করা যার গড় GPA ৪.৫ বা তার বেশি (দুই সেমিস্টারের GPA যোগফল ÷ ২ ≥ ৪.৫)।',
+  disclaimer:'এই ক্যালকুলেটরটি ইমাম মুহাম্মদ বিন সাউদ ইসলামিক ইউনিভার্সিটি কর্তৃক জারি করা উপবৃত্তি বন্ধ সংক্রান্ত অফিসিয়াল সার্কুলারের ভিত্তিতে একটি সহায়ক টুল। সর্বশেষ রেফারেন্স সব ক্ষেত্রেই বিশ্ববিদ্যালয়ের ভর্তি ও নিবন্ধন বিভাগ।',
+  footerUni:'ইমাম মুহাম্মদ বিন সাউদ ইসলামিক ইউনিভার্সিটি — IMAMU',
+  footerSub:'শিক্ষার্থী উপবৃত্তি ব্যবস্থা বুঝতে শিক্ষার্থীদের সাহায্য করার জন্য একটি ব্যাখ্যামূলক ক্যালকুলেটর',
+  footerDevLabel:'প্রোগ্রামার:',
+  semesterWord:'সেমিস্টার', hijriSuffix:'হি.', semestersUnit:'সেমিস্টার', useArabicIndic:false
+}
+};
+
+function toArabicIndic(n){
+  const map = {'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'};
+  return String(n).replace(/[0-9]/g, d => map[d]);
+}
+
+let currentLang = 'ar';
+
+/* ---- 1447H term-system transition helpers ---- */
+const SYSTEM_CHANGE_YEAR = 1447;
+
+function termsInYear(year){
+  return year < SYSTEM_CHANGE_YEAR ? 3 : 2;
+}
+
+function admitSemMax(year){
+  return (!isNaN(year) && year < SYSTEM_CHANGE_YEAR) ? 3 : 2;
+}
+
+function advanceTerms(startYear, startSem, steps){
+  let year = startYear;
+  let sem = startSem;
+  for (let i = 0; i < steps; i++){
+    const maxSem = termsInYear(year);
+    if (sem < maxSem){
+      sem++;
+    } else {
+      year++;
+      sem = 1;
+    }
+  }
+  return {year, sem};
+}
+
+function fmtNum(n, lang){
+  return T[lang].useArabicIndic ? toArabicIndic(n) : String(n);
+}
+
+function termLabel(year, sem, lang){
+  const t = T[lang];
+  let semName;
+  if (sem === 1) semName = t.semFirst;
+  else if (sem === 2) semName = t.semSecond;
+  else semName = t.semThird;
+  return `${t.semesterWord} ${semName} ${fmtNum(year, lang)}${t.hijriSuffix}`;
+}
+
+function populateLangSelect(){
+  const sel = document.getElementById('langSelect');
+  sel.innerHTML = '';
+  LANGS.forEach(l=>{
+    const opt = document.createElement('option');
+    opt.value = l.code;
+    opt.textContent = l.native;
+    sel.appendChild(opt);
+  });
+  sel.value = currentLang;
+  sel.addEventListener('change', ()=>{
+    applyLanguage(sel.value);
+  });
+}
+
+function set(id, text){
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function populateAdmitSemOptions(){
+  const t = T[currentLang];
+  const yearVal = parseInt(document.getElementById('admitYear').value, 10);
+  const maxSem = admitSemMax(yearVal);
+  const semSel = document.getElementById('admitSem');
+  const keep = semSel.value;
+  semSel.innerHTML = '';
+  const labels = [['1', t.semFirst], ['2', t.semSecond], ['3', t.semThird]];
+  labels.slice(0, maxSem).forEach(([v,label])=>{
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = label;
+    semSel.appendChild(opt);
+  });
+  const stillValid = Array.prototype.some.call(semSel.options, o => o.value === keep);
+  semSel.value = stillValid ? keep : '1';
+
+  const flag = document.getElementById('admitFlag');
+  if (!isNaN(yearVal)){
+    flag.textContent = maxSem === 3 ? t.admitFlag3 : t.admitFlag2;
+    flag.style.display = 'inline-block';
+  } else {
+    flag.style.display = 'none';
+  }
+}
+
+function applyLanguage(lang){
+  currentLang = lang;
+  const t = T[lang];
+  const meta = LANGS.find(l=>l.code===lang);
+  document.getElementById('htmlRoot').setAttribute('lang', lang);
+  document.getElementById('htmlRoot').setAttribute('dir', meta.dir);
+  document.getElementById('bodyRoot').setAttribute('data-lang', lang);
+
+  set('brandText', t.brand);
+  set('h1Text', t.h1);
+  set('subText', t.sub);
+
+  set('step1Title', t.step1);
+  set('gpaLabelText', t.gpaLabel);
+  set('gpaHintText', t.gpaHint);
+
+  set('step2Title', t.step2);
+  set('durationLabelText', t.durationLabel);
+  set('durationHintText', t.durationHint);
+
+  const durSel = document.getElementById('duration');
+  const keepDur = durSel.value;
+  durSel.innerHTML = '';
+  [8,9,10,11,12].forEach(v=>{
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = t.durOpt[v];
+    if (String(v) === keepDur) opt.selected = true;
+    durSel.appendChild(opt);
+  });
+
+  set('step3Title', t.step3);
+  set('yearLabelText', t.yearLabel);
+  set('semLabelText', t.semLabel);
+  set('admitHintText', t.admitHint);
+  set('sysNoteText', t.sysNote);
+
+  populateAdmitSemOptions();
+
+  set('step4Title', t.step4);
+  set('deferredLabelText', t.deferredLabel);
+  set('deferredHintText', t.deferredHint);
+  set('withdrawnLabelText', t.withdrawnLabel);
+  set('withdrawnHintText', t.withdrawnHint);
+
+  set('calcBtnText', t.calcBtn);
+
+  set('resultTitleText', t.resultTitle);
+  set('resultBox1Label', t.resultBox1);
+  set('resultBox2Label', t.resultBox2);
+  set('resultBox3Label', t.resultBox3);
+
+  set('rulesTitleText', t.rulesTitle);
+  set('rule1Text', t.rule1);
+  set('rule2Text', t.rule2);
+  set('rule3Text', t.rule3);
+  set('note1LabelText', t.note1Label);
+  set('note1Text', t.note1);
+  set('note2LabelText', t.note2Label);
+  set('note2Text', t.note2);
+
+  set('excTitleText', t.excTitle);
+  set('excText1', t.excText1);
+  set('excCondLabel', t.excCondLabel);
+  set('excText2', t.excText2);
+
+  set('disclaimerText', t.disclaimer);
+  set('footerUniText', t.footerUni);
+  set('footerSubText', t.footerSub);
+
+  document.title = t.h1 + ' - ' + t.footerUni;
+
+  if (document.getElementById('resultCard').classList.contains('show')){
+    calculate();
+  }
+}
+
+function calculate(){
+  const t = T[currentLang];
+  const gpa = parseFloat(document.getElementById('gpa').value);
+  const duration = parseInt(document.getElementById('duration').value, 10);
+  const admitYear = parseInt(document.getElementById('admitYear').value, 10);
+  const admitSem = parseInt(document.getElementById('admitSem').value, 10);
+  const deferred = Math.max(0, parseInt(document.getElementById('deferred').value || '0', 10));
+  const withdrawn = Math.max(0, parseInt(document.getElementById('withdrawn').value || '0', 10));
+
+  const resultCard = document.getElementById('resultCard');
+  const statusLine = document.getElementById('statusLine');
+  const lastTermEl = document.getElementById('lastTerm');
+  const cutoffTermEl = document.getElementById('cutoffTerm');
+  const totalFundedEl = document.getElementById('totalFunded');
+
+  resultCard.classList.remove('show');
+  void resultCard.offsetWidth;
+
+  if (isNaN(gpa) || isNaN(admitYear) || isNaN(admitSem) || isNaN(duration)) {
+    lastTermEl.textContent = '—';
+    cutoffTermEl.textContent = '—';
+    totalFundedEl.textContent = '—';
+    statusLine.className = 'status-line status-ok';
+    statusLine.textContent = t.statusDefault;
+    resultCard.classList.add('show');
+    return;
+  }
+
+  if (gpa < 2) {
+    const admitLabel = termLabel(admitYear, admitSem, currentLang);
+    lastTermEl.textContent = admitLabel;
+    cutoffTermEl.textContent = admitLabel;
+    totalFundedEl.textContent = fmtNum(0, currentLang) + ' ' + t.semestersUnit;
+    statusLine.className = 'status-line status-bad';
+    statusLine.textContent = t.statusBad;
+    resultCard.classList.add('show');
+    return;
+  }
+
+  const totalFunded = duration + deferred;
+  const last = advanceTerms(admitYear, admitSem, totalFunded - 1);
+  const cutoff = advanceTerms(last.year, last.sem, 1);
+
+  lastTermEl.textContent = termLabel(last.year, last.sem, currentLang);
+  cutoffTermEl.textContent = termLabel(cutoff.year, cutoff.sem, currentLang);
+  totalFundedEl.textContent = fmtNum(totalFunded, currentLang) + ' ' + t.semestersUnit;
+
+  statusLine.className = 'status-line status-ok';
+  let msg = t.statusOk;
+  if (withdrawn > 0) {
+    msg += t.statusOkExtra;
+  }
+  statusLine.textContent = msg;
+
+  resultCard.classList.add('show');
+}
+
+document.getElementById('admitYear').addEventListener('input', populateAdmitSemOptions);
+document.getElementById('admitYear').addEventListener('change', populateAdmitSemOptions);
+document.getElementById('calcBtn').addEventListener('click', calculate);
+
+populateLangSelect();
+applyLanguage('ar');
+</script>
+
+</body>
+</html>
